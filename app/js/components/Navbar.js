@@ -13,6 +13,7 @@ function mapStateToProps(state) {
   return {
     dropboxAccessToken: state.settings.api.dropboxAccessToken,
     localIdentities: state.profiles.identity.localIdentities,
+    defaultIdentity: state.profiles.identity.default,
     addressBalanceUrl: state.settings.api.zeroConfBalanceUrl,
     coreWalletAddress: state.account.coreWallet.address,
     coreWalletBalance: state.account.coreWallet.balance,
@@ -72,6 +73,7 @@ class Navbar extends Component {
     this.onAvatarNavMouseOut = this.onAvatarNavMouseOut.bind(this)
     this.onSettingsNavMouseOver = this.onSettingsNavMouseOver.bind(this)
     this.onSettingsNavMouseOut = this.onSettingsNavMouseOut.bind(this)
+    this.getProfileRoute = this.getProfileRoute.bind(this)
 
     this.state = {
       homeTabHover: false,
@@ -237,7 +239,24 @@ class Navbar extends Component {
     this.setState({ settingsTabHover: false })
   }
 
+  getProfileRoute() {
+    const defaultIdentityName = this.props.defaultIdentity
+    const identity = this.props.localIdentities[defaultIdentityName]
+    const profile = identity.profile
+    if (!profile.hasOwnProperty('givenName') 
+      && !profile.hasOwnProperty('familyName') 
+      && !profile.hasOwnProperty('description')
+      && !profile.hasOwnProperty('account')
+      && !profile.hasOwnProperty('image')) {
+      return `/profiles/${identity.domainName}/edit`
+    }
+    else {
+      return "/profiles"
+    }
+  }
+
   render() {
+
     const popover = (
       <Popover id="things-to-do">
         <ActionItem
@@ -278,7 +297,6 @@ class Navbar extends Component {
         />
       </Popover>
     )
-
     const numberOfActionItems = this.numberOfActionItems()
 
     return (
@@ -300,7 +318,7 @@ class Navbar extends Component {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to="/profiles" className="nav-link"
+              <Link to={this.getProfileRoute} className="nav-link"
                   onMouseOver={this.onAvatarNavMouseOver} 
                   onMouseOut={this.onAvatarNavMouseOut} >
                 <img src={this.avatarNavIconImage()} />
