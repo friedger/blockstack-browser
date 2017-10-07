@@ -73,7 +73,6 @@ class Navbar extends Component {
     this.onAvatarNavMouseOut = this.onAvatarNavMouseOut.bind(this)
     this.onSettingsNavMouseOver = this.onSettingsNavMouseOver.bind(this)
     this.onSettingsNavMouseOut = this.onSettingsNavMouseOut.bind(this)
-    this.getProfileRoute = this.getProfileRoute.bind(this)
 
     this.state = {
       homeTabHover: false,
@@ -239,29 +238,6 @@ class Navbar extends Component {
     this.setState({ settingsTabHover: false })
   }
 
-  getProfileRoute() {
-    if (this.props.localIdentities == null
-      || this.props.localIdentities.length === 0
-      || this.props.defaultIdentity == null) {
-      return "/profiles"
-    }
-
-    const defaultIdentityName = this.props.defaultIdentity
-    const identity = this.props.localIdentities[defaultIdentityName]
-    const profile = identity.profile
-    
-    if (!profile.hasOwnProperty('givenName') 
-      && !profile.hasOwnProperty('familyName') 
-      && !profile.hasOwnProperty('description')
-      && !profile.hasOwnProperty('account')
-      && !profile.hasOwnProperty('image')) {
-      return `/profiles/${identity.domainName}/edit`
-    }
-    else {
-      return "/profiles"
-    }
-  }
-
   render() {
 
     const popover = (
@@ -325,7 +301,7 @@ class Navbar extends Component {
               </Link>
             </li>
             <li className="nav-item">
-              <Link to={this.getProfileRoute} className="nav-link"
+              <Link to="/profiles" className="nav-link"
                   onMouseOver={this.onAvatarNavMouseOver} 
                   onMouseOut={this.onAvatarNavMouseOut} >
                 <img src={this.avatarNavIconImage()} />
