@@ -10,6 +10,8 @@ export const ICONS = {
   walletNavActive: require('@images/icon-nav-wallet-hover.svg'),
   avatarNav: require('@images/icon-nav-profile.svg'),
   avatarNavActive: require('@images/icon-nav-profile-hover.svg'),
+  claimsNav: require('@images/icon-nav-wallet.svg'),
+  claimsNavActive: require('@images/icon-nav-wallet-hover.svg'),
   settingsNav: require('@images/icon-nav-settings.svg'),
   settingsNavActive: require('@images/icon-nav-settings-hover.svg')
 }
@@ -26,6 +28,8 @@ class Navbar extends Component {
     this.onHomeNavMouseOut = this.onHomeNavMouseOut.bind(this)
     this.onWalletNavMouseOver = this.onWalletNavMouseOver.bind(this)
     this.onWalletNavMouseOut = this.onWalletNavMouseOut.bind(this)
+    this.onClaimsNavMouseOver = this.onClaimsNavMouseOver.bind(this)
+    this.onClaimsNavMouseOut = this.onClaimsNavMouseOut.bind(this)
     this.onAvatarNavMouseOver = this.onAvatarNavMouseOver.bind(this)
     this.onAvatarNavMouseOut = this.onAvatarNavMouseOut.bind(this)
     this.onSettingsNavMouseOver = this.onSettingsNavMouseOver.bind(this)
@@ -35,6 +39,7 @@ class Navbar extends Component {
       homeTabHover: false,
       walletTabHover: false,
       avatarTabHover: false,
+      claimsTabHover: false,
       settingsTabHover: false
     }
   }
@@ -61,6 +66,14 @@ class Navbar extends Component {
 
   onAvatarNavMouseOut() {
     this.setState({ avatarTabHover: false })
+  }
+
+  onClaimsNavMouseOver() {
+    this.setState({ claimsTabHover: true })
+  }
+
+  onClaimsNavMouseOut() {
+    this.setState({ claimsTabHover: false })
   }
 
   onSettingsNavMouseOver() {
@@ -95,6 +108,14 @@ class Navbar extends Component {
     }
   }
 
+  claimsNavIconImage() {
+    if (this.props.activeTab === 'claims' || this.state.claimsTabHover) {
+      return ICONS.claimsNavActive
+    } else {
+      return ICONS.claimsNav
+    }
+  }
+
   avatarNavIconImage() {
     if (this.props.activeTab === 'avatar' || this.state.avatarTabHover) {
       return ICONS.avatarNavActive
@@ -108,6 +129,8 @@ class Navbar extends Component {
       this.props.activeTab === 'home' || this.state.homeTabHover
     const avatarActive =
       this.props.activeTab === 'avatar' || this.state.avatarTabHover
+    const claimsActive =
+      this.props.activeTab === 'claims' || this.state.claimsTabHover
     const walletActive =
       this.props.activeTab === 'wallet' || this.state.walletTabHover
     const settingsActive =
@@ -140,11 +163,22 @@ class Navbar extends Component {
               >
                 <img src={this.avatarNavIconImage()} alt="IDs" />
                 <span className={`${avatarActive ? 'active' : ''}`}>
-                  &nbsp;&nbsp;&nbsp;ID<span
-                    style={{ textTransform: 'lowercase' }}
-                  >
-                    s
-                  </span>&nbsp;&nbsp;&nbsp;
+                  &nbsp;&nbsp;&nbsp;ID
+                  <span style={{ textTransform: 'lowercase' }}>s</span>
+                  &nbsp;&nbsp;&nbsp;
+                </span>
+              </Link>
+            </li>
+            <li className="nav-item ml-auto">
+              <Link
+                to="/claims"
+                className="nav-link"
+                onMouseOver={this.onClaimsNavMouseOver}
+                onMouseOut={this.onClaimsNavMouseOut}
+              >
+                <img src={this.claimsNavIconImage()} alt="Claims" />
+                <span className={`${claimsActive ? 'active' : ''}`}>
+                  &nbsp;&nbsp;&nbsp;Claims&nbsp;&nbsp;&nbsp;
                 </span>
               </Link>
             </li>
