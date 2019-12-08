@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { useState } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import Navbar from './components/Navbar'
 import { AppsActions } from './store/apps'
 import { Box, Flex, Type } from 'blockstack-ui'
 import { Hover } from 'react-powerplug'
+import InputGroup from '@components/InputGroup'
 import { Spinner } from '@components/ui/components/spinner'
 import { trackEventOnce } from '@utils/server-utils'
+import { lookupProfile } from 'blockstack'
 
 const Loading = ({ ...rest }) => (
   <Flex
@@ -35,17 +37,50 @@ const Content = ({ topApps, allApps, ...rest }) => {
   }
   return (
     <Box maxWidth={1280} width="100%" mx="auto" p={[1, 2, 4]} {...rest}>
+      <LaunchApp />
       <AppsSection title="Top Apps" apps={topApps} limit={24} />
       {allApps
         .sort((a, b) => a.label.localeCompare(b.label))
         .map(category => {
-          const apps = category.apps.sort((a, b) => a.name.localeCompare(b.name))
+          const apps = category.apps.sort((a, b) =>
+            a.name.localeCompare(b.name)
+          )
           return <AppsSection title={category.label} apps={apps} />
         })}
     </Box>
   )
 }
 
+const LaunchApp = () => {
+ 
+  const [blockstackId, setBlockstackId] = useState('')
+
+  const onBlockstackIdChange = e => {
+    console.log(e)
+    setBlockstackId(e.target.value)
+  }
+
+  const launchApp = () => {
+    lookupProfile(blockstackId).then(profile => {
+      window.open(profile.url)
+    })
+  }
+
+  return (
+    <>
+      Launch Blockstack App
+      <InputGroup
+        key="input-group-app-blockstack-id"
+        label="Blockstack ID of app"
+        name="identifier"
+        placeholder="oitimesheet.id.blockstack"
+        data={this.state}
+        onChange={onBlockstackIdChange}
+        onReturnKeyPress={launchApp}
+      />
+    </>
+  )
+}
 const AppsSection = ({ title, apps, limit, category, ...rest }) => {
   let appsList = apps.filter(app => app.imgixImageUrl)
   if (limit) {
@@ -187,8 +222,7 @@ class HomeScreenPage extends React.Component {
   }
   render() {
     const loading =
-      this.props.apps &&
-      this.props.apps.loading ||
+      (this.props.apps && this.props.apps.loading) ||
       !this.props.apps.topApps ||
       !this.props.apps.topApps.length
     return (
